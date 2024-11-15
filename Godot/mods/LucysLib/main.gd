@@ -44,13 +44,13 @@ func register_log_msg_support():
 
 # future use
 func process_packet_lucy_packet(DATA, PACKET_SENDER, from_host) -> bool:
-	print("[LUCY PACKET] [" + PACKET_SENDER + " " + Network._get_username_from_id(PACKET_SENDER) + "]")
+	print("[LUCY PACKET] [" + str(PACKET_SENDER) + " " + str(Network._get_username_from_id(PACKET_SENDER)) + "]")
 	return true
 
 # message logging
 func process_packet_message_log(DATA, PACKET_SENDER, from_host) -> bool:
 	if LOG_MESSAGES:
-		print("[MSG] [" + PACKET_SENDER + " " + Network._get_username_from_id(PACKET_SENDER) + "] " + DATA)
+		print("[MSG] [" + str(PACKET_SENDER) + " " + str(Network._get_username_from_id(PACKET_SENDER)) + "] " + str(DATA))
 	return false
 
 # bbcode support in messages
