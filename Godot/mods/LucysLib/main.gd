@@ -23,8 +23,12 @@ func _enter_tree():
 	#BBCode.DEBUG = true
 
 func _ready():
-	print("[LUCYSLIB] LucysLib 0.1.0 ready")
+	print("[LUCYSLIB] LucysLib 0.1.1 ready")
 	#BBCode.test()
+
+#func packet_dump(PACKET):
+#	print("[PACKET] ", PACKET)
+#	print("[PACKET DECOMPRESSED DATA] ", PACKET.data.decompress_dynamic( - 1, Network.COMPRESSION_TYPE))
 
 func register_bb_msg_support():
 	if HAS_BB_MSG: return

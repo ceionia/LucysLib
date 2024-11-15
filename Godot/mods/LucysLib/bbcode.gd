@@ -5,7 +5,8 @@ var DEBUG: bool = false
 enum TAG_TYPE { NULL=0, ROOT=1,
 	color,
 	u, s, i, b, center, right,
-	rainbow, tornado, shake, wave, font
+	rainbow, tornado, shake, wave, font,
+	img
 }
 const DEFAULT_ALLOWED_TYPES := [TAG_TYPE.color, TAG_TYPE.u, TAG_TYPE.s, TAG_TYPE.b, TAG_TYPE.i]
 
@@ -73,6 +74,11 @@ class BBCodeUnsafeTag extends BBCodeTag:
 			return "[" + tag_str + stuff + "]" + .get_full(allowed_types) + "[/" + tag_str + "]"
 		else: return .get_full(allowed_types)
 
+class BBCodeImgTag extends BBCodeUnsafeTag:
+	# get stripped for image adds nothing!
+	func get_stripped() -> String:
+		return ""
+
 class BBCodeSimpleTag extends BBCodeTag:
 	func get_full(allowed_types: Array) -> String:
 		var tag_str = TAG_TYPE.keys()[tag_type]
@@ -89,6 +95,7 @@ static func tag_creator(tag_type: int, junk: String) -> BBCodeTag:
 	var n: BBCodeTag
 	match tag_type:
 		TAG_TYPE.color: n = BBCodeColorTag.new()
+		TAG_TYPE.img: n = BBCodeImgTag.new()
 		TAG_TYPE.s, TAG_TYPE.u, TAG_TYPE.i, TAG_TYPE.b,\
 		TAG_TYPE.center, TAG_TYPE.right: n = BBCodeSimpleTag.new()
 		TAG_TYPE.rainbow, TAG_TYPE.shake, TAG_TYPE.tornado, TAG_TYPE.wave,\
@@ -242,6 +249,7 @@ static func find_in_strings(bbcode: BBCodeTag, find: String) -> bool:
 
 func test():
 	var tests := [
+		"[b]foo[img=500]test1[/img]bar[img]test2[i]a[/i][/img][/b]",
 		"foo bar",
 		"foo [u]foobar[/u] bar",
 		"foo [color=red]foobar[/u] bar",
