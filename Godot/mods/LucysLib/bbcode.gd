@@ -27,10 +27,11 @@ class BBCodeTag extends Reference:
 			elif n is BBCodeTag: r += n.get_full(allowed_types)
 		return r
 	
-	func get_stripped() -> String:
+	func get_stripped(preserve_escape:bool=false) -> String:
 		var r := ""
 		for n in inner:
-			if n is String: r += n
+			if n is String and preserve_escape: r += n
+			elif n is String and not preserve_escape: r += n.replace("[lb]","[").replace("[rb]","]")
 			elif n is BBCodeTag: r += n.get_stripped()
 		return r
 
@@ -75,8 +76,12 @@ class BBCodeUnsafeTag extends BBCodeTag:
 		else: return .get_full(allowed_types)
 
 class BBCodeImgTag extends BBCodeUnsafeTag:
+	func get_full(allowed_types: Array) -> String:
+		if TAG_TYPE.img in allowed_types:
+			return .get_full(allowed_types)
+		else: return ""
 	# get stripped for image adds nothing!
-	func get_stripped() -> String:
+	func get_stripped(preserve_escape:bool=false) -> String:
 		return ""
 
 class BBCodeSimpleTag extends BBCodeTag:
@@ -158,6 +163,17 @@ func parse_bbcode_text(text: String) -> BBCodeTag:
 		
 		# add leading text to current tag
 		cur_tag.inner.push_back(before.replace('[','[lb]'))
+		
+		# special case for [lb] [rb] escapes
+		if not is_close and tag == "lb" or tag == "rb":
+			cur_tag.inner.push_back("["+tag+"]")
+			continue
+		
+		# unsupported bbcode - treat as text
+		if tag_type == TAG_TYPE.NULL:
+			var opener = "[lb]" if not is_close else "[lb]/"
+			cur_tag.inner.push_back(opener+tag+junk+"[rb]")
+			continue
 		
 		# we got a closing tag, unroll the stack
 		# until we get a matching open or root
@@ -249,11 +265,12 @@ static func find_in_strings(bbcode: BBCodeTag, find: String) -> bool:
 
 func test():
 	var tests := [
+		"[haha i am very cool]",
 		"[b]foo[img=500]test1[/img]bar[img]test2[i]a[/i][/img][/b]",
-		"foo bar",
+		"foo [lb]bar[rb]",
 		"foo [u]foobar[/u] bar",
 		"foo [color=red]foobar[/u] bar",
-		"foo [color=#10ffffff]foobar[/u] bar",
+		"foo [color=#10ffffff]fo[lb]obar[/u] bar",
 		"foo [color=#ffffff]foobar[/u] bar",
 		"foo [color=#1111111111111]foobar[/u] bar",
 		"foo [color=transparent]foobar[/u] bar",
@@ -275,6 +292,7 @@ func test():
 		print("[BB TEST FULL ALL] ", r.get_full(TAG_TYPE.values()))
 		print("[BB TEST U] ", r.get_full([TAG_TYPE.u]))
 		print("[BB TEST STRIPPED] ", r.get_stripped())
+		print("[BB TEST STRIPPED(true)] ", r.get_stripped(true))
 		print("[BB TEST LEN 10] ", parsed_to_text(r, DEFAULT_ALLOWED_TYPES, 10))
 		clamp_alpha(r, 0.5)
 		print("[BB TEST ALPHA] ", r.get_full([TAG_TYPE.color]))
