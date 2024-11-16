@@ -121,7 +121,7 @@ func parse_bbcode_text(text: String) -> BBCodeTag:
 	
 	if not tag_matcher:
 		tag_matcher = RegEx.new()
-		tag_matcher.compile("(.*?)(\\[(\\w+)([^\\[\\]]*?)\\]|\\[/(\\w+)\\])")
+		tag_matcher.compile("(?s)(.*?)(\\[(\\w+)([^\\[\\]]*?)\\]|\\[/(\\w+)\\])")
 	
 	var linear_matches: Array = tag_matcher.search_all(text)
 	# no tags - plaintext
@@ -265,6 +265,7 @@ static func find_in_strings(bbcode: BBCodeTag, find: String) -> bool:
 
 func test():
 	var tests := [
+		"Choose how the lobby operates.\n[color=#6a4420]PUBLIC[/color]: Public and visible in the Game Browser for all to join.\n[color=#6a4420]CODE-ONLY[/color]: Public, but not visible in the Game Browser, while still allowing players to join via.\n[color=#6a4420]FRIENDS-ONLY[/color]: Codeless Lobby that is hidden and inaccessible to all players except Steam friends.\n[color=#6a4420]OFFLINE/SOLO[/color]: Start a game alone, with players unable to join you.",
 		"[haha i am very cool]",
 		"[b]foo[img=500]test1[/img]bar[img]test2[i]a[/i][/img][/b]",
 		"foo [lb]bar[rb]",
