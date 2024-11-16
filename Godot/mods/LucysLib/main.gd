@@ -19,11 +19,10 @@ func set_hlogmsg(val): pass
 func _enter_tree():
 	NetManager = NetManager_t.new()
 	BBCode = BBCode_t.new()
-	#NetManager.DEBUG = true
-	#BBCode.DEBUG = true
 
 func _ready():
-	print("[LUCYSLIB] LucysLib 0.1.1 ready")
+	print("[LUCYSLIB] LucysLib 0.1.2 ready")
+	#BBCode.DEBUG = true
 	#BBCode.test()
 
 #func packet_dump(PACKET):

@@ -7,3 +7,7 @@ initial release
 - fix \[lb], \[rb], and \[text between brackets]
 - add img tag support & stripping
 - fix message logging
+
+0.1.2
+----
+- fix newline handling
